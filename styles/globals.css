@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  /* Light theme */
+  :root,
+  .light {
+    --background: 0 0% 100%; /* ✅ Pure White */
+    --foreground: 0 0% 3.9%;
+    --primary: 200 100% 50%; /* ✅ Light Teal */
+    --primary-foreground: 0 0% 0%; /* ✅ Black text for readability */
+    --secondary: 160 80% 40%; /* ✅ Slightly darker Teal */
+    --secondary-foreground: 0 0% 0%; /* ✅ Ensures contrast */
+    --accent: 15 90% 50%; /* ✅ Accent Orange */
+    --accent-foreground: 0 0% 0%;
+    --border: 210 100% 85%; /* Light border color */
+    --ring: 200 100% 70%; /* Light ring color */
+  }
+
+  /* Dark theme */
+  .dark {
+    --background: 0 0% 3.9%; /* Dark background */
+    --foreground: 0 0% 98%; /* Light text for dark mode */
+    --primary: 200 100% 40%; /* ✅ Darker Teal */
+    --primary-foreground: 0 0% 98%; /* White text */
+    --secondary: 160 80% 30%; /* Darker Teal */
+    --secondary-foreground: 0 0% 98%; /* White text */
+    --accent: 15 90% 40%; /* Darker Accent Orange */
+    --accent-foreground: 0 0% 98%;
+    --border: 200 100% 20%; /* Dark border */
+    --ring: 200 100% 40%; /* Dark ring color */
+  }
+
+  /* Brown theme */
+  .brown {
+    --background: 0 0% 22%; /* Dark Brown */
+    --foreground: 0 0% 85%; /* Light Brown */
+    --primary: 30 60% 50%; /* Brown */
+    --primary-foreground: 0 0% 100%; /* Light Text */
+    --secondary: 25 70% 40%; /* Slightly darker brown */
+    --secondary-foreground: 0 0% 100%;
+    --accent: 30 80% 45%; /* Accent brown */
+    --accent-foreground: 0 0% 100%;
+    --border: 25 80% 25%;
+    --ring: 30 80% 40%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
