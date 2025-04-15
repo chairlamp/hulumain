@@ -1,5 +1,4 @@
 "use client"
-
 import Link from "next/link"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -75,14 +74,8 @@ export function Header({ session }: HeaderProps) {
                   Logout
                 </button>
               </form>
-              <Button asChild size="sm">
-                <Link href="/admin-dashboard">Go to Admin Dashboard</Link>
-              </Button>
               <Button asChild size="sm" variant="secondary">
                 <Link href="/user-dashboard">Go to User Dashboard</Link>
-              </Button>
-              <Button asChild size="sm" variant="outline">
-                <Link href="/driver-dashboard">Go to Driver Dashboard</Link>
               </Button>
             </div>
           ) : (

@@ -5,46 +5,64 @@ import type { FoodItem } from "@/types/food"
 
 export interface CartItem {
   id: string
-  foodItem: FoodItem
+  menuItemId: string
+  name: string
+  price: number
   quantity: number
   specialInstructions?: string
 }
 
-interface CartContextType {
+interface Cart {
+  id: string
   items: CartItem[]
-  addToCart: (foodItem: FoodItem, quantity?: number, specialInstructions?: string) => Promise<any>
-  removeFromCart: (id: string) => void
-  updateQuantity: (id: string, quantity: number) => Promise<any>
-  clearCart: () => Promise<boolean>
+  total: number
+}
+
+interface CartContextType {
+  cart: Cart | null
+  loading: boolean
+  addToCart: (foodItem: FoodItem, quantity?: number, specialInstructions?: string) => Promise<void>
+  removeFromCart: (id: string) => Promise<void>
+  updateQuantity: (id: string, quantity: number) => Promise<void>
+  clearCart: () => Promise<void>
   getCartTotal: () => number
   getItemCount: () => number
-  getItemById: (id: string) => CartItem | undefined
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([])
+  const [cart, setCart] = useState<Cart | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
 
-  // Load cart from localStorage on initial render
+  // Fetch cart on initial render
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart")
-    if (savedCart) {
+    const fetchCart = async () => {
       try {
-        setItems(JSON.parse(savedCart))
+        setLoading(true)
+        const response = await fetch("/api/cart")
+
+        if (response.ok) {
+          const data = await response.json()
+          setCart(data)
+        } else {
+          // If unauthorized or cart not found, create empty cart
+          setCart({ id: "", items: [], total: 0 })
+        }
       } catch (error) {
-        console.error("Failed to parse cart from localStorage:", error)
+        console.error("Error fetching cart:", error)
+        setCart({ id: "", items: [], total: 0 })
+      } finally {
+        setLoading(false)
       }
     }
-  }, [])
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(items))
-  }, [items])
+    fetchCart()
+  }, [])
 
   const addToCart = async (foodItem: FoodItem, quantity = 1, specialInstructions?: string) => {
     try {
+      setLoading(true)
       const response = await fetch("/api/cart", {
         method: "POST",
         headers: {
@@ -57,90 +75,120 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }),
       })
 
-      if (!response.ok) throw new Error("Failed to add item to cart")
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to add item to cart")
+      }
 
       const data = await response.json()
-      setItems(data.cart)
-      return data
+      setCart(data.cart)
     } catch (error) {
       console.error("Error adding to cart:", error)
       throw error
+    } finally {
+      setLoading(false)
     }
   }
 
-  const removeFromCart = (id: string) => {
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id))
-  }
-
-  const updateQuantity = async (id: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(id)
-      return
-    }
-
+  const removeFromCart = async (id: string) => {
     try {
+      setLoading(true)
       const response = await fetch("/api/cart", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          menuItemId: id,
+          cartItemId: id,
+          quantity: 0,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to remove item from cart")
+      }
+
+      const data = await response.json()
+      setCart(data.cart)
+    } catch (error) {
+      console.error("Error removing from cart:", error)
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const updateQuantity = async (id: string, quantity: number) => {
+    try {
+      setLoading(true)
+      const response = await fetch("/api/cart", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cartItemId: id,
           quantity,
         }),
       })
 
-      if (!response.ok) throw new Error("Failed to update cart")
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to update cart")
+      }
 
       const data = await response.json()
-      setItems(data.cart)
-      return data
+      setCart(data.cart)
     } catch (error) {
       console.error("Error updating cart:", error)
       throw error
+    } finally {
+      setLoading(false)
     }
   }
 
   const clearCart = async () => {
     try {
+      setLoading(true)
       const response = await fetch("/api/cart", {
         method: "DELETE",
       })
 
-      if (!response.ok) throw new Error("Failed to clear cart")
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to clear cart")
+      }
 
-      setItems([])
-      localStorage.removeItem("cart")
-      return true
+      const data = await response.json()
+      setCart(data.cart)
     } catch (error) {
       console.error("Error clearing cart:", error)
       throw error
+    } finally {
+      setLoading(false)
     }
   }
 
   const getCartTotal = () => {
-    return items.reduce((total, item) => total + item.foodItem.price * item.quantity, 0)
+    return cart?.total || 0
   }
 
   const getItemCount = () => {
-    return items.reduce((count, item) => count + item.quantity, 0)
-  }
-
-  const getItemById = (id: string) => {
-    return items.find((item) => item.id === id)
+    return cart?.items.reduce((count, item) => count + item.quantity, 0) || 0
   }
 
   return (
     <CartContext.Provider
       value={{
-        items,
+        cart,
+        loading,
         addToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
         getCartTotal,
         getItemCount,
-        getItemById,
       }}
     >
       {children}

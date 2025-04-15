@@ -1,16 +1,23 @@
 import NextAuth, { type Session } from "next-auth"
 
+// Extend NextAuth Session and JWT types to include custom properties
 declare module "next-auth" {
   interface Session {
     user: {
-      role: string
       id: string
+      role: string
       name?: string | null
       email?: string | null
       image?: string | null
     }
   }
+
+  interface JWT {
+    id?: string
+    role?: string
+  }
 }
+
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcryptjs"
@@ -30,7 +37,7 @@ export const authOptions = {
           throw new Error("Please enter an email and password.")
         }
 
-        // Check if user exists in database
+        // Check if user exists in the database
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         })
@@ -39,13 +46,14 @@ export const authOptions = {
           throw new Error("User not found. Please sign up first.")
         }
 
-        // Verify password
+        // Verify the password
         const isValidPassword = await bcrypt.compare(credentials.password, user.password)
         if (!isValidPassword) {
           throw new Error("Incorrect password.")
         }
 
-        return { id: user.id, name: user.name, email: user.email }
+        // Include role in the returned user object
+        return { id: user.id, name: user.name, email: user.email, role: user.role }
       },
     }),
   ],
@@ -54,18 +62,41 @@ export const authOptions = {
     strategy: "jwt" as const,
   },
   callbacks: {
-    async jwt({
-      token,
-      user,
-    }: { token: import("next-auth/jwt").JWT; user?: any }): Promise<import("next-auth/jwt").JWT> {
+    // Add the user's role and id to the JWT token
+    async jwt({ token, user }: { token: any; user?: { id: string | number; name?: string | null; email?: string | null; role?: string } }) {
       if (user) {
-        token.id = user.id
+        const dbUser = await prisma.user.findUnique({
+          where: { id: String(user.id) },
+          select: { id: true, role: true },
+        })
+
+        token.id = dbUser?.id
+        token.role = dbUser?.role // Save the role in the token
       }
       return token
     },
+    // Attach the token data to the session object
     async session({ session, token }: { session: Session; token: any }) {
-      session.user = { ...(session.user || {}), id: token.id }
+      session.user = {
+        ...(session.user || {}),
+        id: token.id,
+        role: token.role, // Make the role available in the session
+      }
       return session
+    },
+    // Redirect users based on their role after sign in
+    async redirect({ url, baseUrl, token }: { url: string; baseUrl: string; token?: any }) {
+      // When a token exists and has a role, send the user to the appropriate dashboard.
+      if (token && token.role) {
+        if (token.role === "ADMIN") {
+          return `${baseUrl}/admin-dashboard`
+        }
+        if (token.role === "DELIVERY_AGENT") {
+          return `${baseUrl}/driver-dashboard`
+        }
+      }
+      // Fallback redirect
+      return baseUrl
     },
   },
   pages: {

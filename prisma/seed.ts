@@ -1,15 +1,15 @@
-import { PrismaClient } from "@prisma/client"
-import bcrypt from "bcryptjs"
+const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcryptjs");
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Seeding database...")
+  console.log("Seeding database...");
 
   // Create users
-  const adminPassword = await bcrypt.hash("admin123", 10)
-  const customerPassword = await bcrypt.hash("customer123", 10)
-  const driverPassword = await bcrypt.hash("driver123", 10)
+  const adminPassword = await bcrypt.hash("admin123", 10);
+  const customerPassword = await bcrypt.hash("customer123", 10);
+  const driverPassword = await bcrypt.hash("driver123", 10);
 
   const admin = await prisma.user.upsert({
     where: { email: "admin@example.com" },
@@ -20,7 +20,7 @@ async function main() {
       password: adminPassword,
       role: "ADMIN",
     },
-  })
+  });
 
   const customer = await prisma.user.upsert({
     where: { email: "customer@example.com" },
@@ -43,7 +43,7 @@ async function main() {
         ],
       },
     },
-  })
+  });
 
   const driver = await prisma.user.upsert({
     where: { email: "driver@example.com" },
@@ -59,9 +59,9 @@ async function main() {
         },
       },
     },
-  })
+  });
 
-  console.log("Created users:", { admin, customer, driver })
+  console.log("Created users:", { admin, customer, driver });
 
   // Create restaurants
   const restaurant1 = await prisma.restaurant.upsert({
@@ -78,7 +78,7 @@ async function main() {
       deliveryFee: 2.99,
       estimatedDeliveryTime: 30,
     },
-  })
+  });
 
   const restaurant2 = await prisma.restaurant.upsert({
     where: { id: "clz2" },
@@ -94,9 +94,9 @@ async function main() {
       deliveryFee: 3.99,
       estimatedDeliveryTime: 45,
     },
-  })
+  });
 
-  console.log("Created restaurants:", { restaurant1, restaurant2 })
+  console.log("Created restaurants:", { restaurant1, restaurant2 });
 
   // Create menu items
   const menuItems = await Promise.all([
@@ -178,14 +178,14 @@ async function main() {
         category: "Sides",
       },
     }),
-  ])
+  ]);
 
-  console.log(`Created ${menuItems.length} menu items`)
+  console.log(`Created ${menuItems.length} menu items`);
 
   // Create a sample order
   const customerAddress = await prisma.address.findFirst({
     where: { userId: customer.id },
-  })
+  });
 
   if (customerAddress) {
     const order = await prisma.order.create({
@@ -196,7 +196,7 @@ async function main() {
         status: "DELIVERED",
         total: 22.97,
         deliveryFee: 2.99,
-        placedAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
+        placedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
         preparedAt: new Date(Date.now() - 23 * 60 * 60 * 1000),
         pickedUpAt: new Date(Date.now() - 22.5 * 60 * 60 * 1000),
         deliveredAt: new Date(Date.now() - 22 * 60 * 60 * 1000),
@@ -220,11 +220,10 @@ async function main() {
           ],
         },
       },
-    })
+    });
 
-    console.log("Created sample order:", order)
+    console.log("Created sample order:", order);
 
-    // Create a review for the order
     const review = await prisma.review.create({
       data: {
         userId: customer.id,
@@ -233,29 +232,27 @@ async function main() {
         rating: 5,
         comment: "Great food and fast delivery!",
       },
-    })
+    });
 
-    console.log("Created review:", review)
+    console.log("Created review:", review);
   }
 
-  // Create a favorite restaurant for the customer
   const favorite = await prisma.favorite.create({
     data: {
       userId: customer.id,
       restaurantId: restaurant2.id,
     },
-  })
+  });
 
-  console.log("Created favorite:", favorite)
-
-  console.log("Database seeding completed!")
+  console.log("Created favorite:", favorite);
+  console.log("Database seeding completed!");
 }
 
 main()
   .catch((e) => {
-    console.error(e)
-    process.exit(1)
+    console.error(e);
+    process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect()
-  })
+    await prisma.$disconnect();
+  });

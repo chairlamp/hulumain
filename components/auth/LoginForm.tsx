@@ -35,12 +35,23 @@ export function LoginForm() {
         redirect: false,
         email: formData.email,
         password: formData.password,
-        callbackUrl,
       })
 
-      if (!result?.error) {
-        router.push(callbackUrl)
-        router.refresh()
+      if (result?.ok) {
+        setTimeout(async () => {
+          const res = await fetch("/api/auth/session")
+          const session = await res.json()
+
+          const role = session?.user?.role
+
+          if (role === "ADMIN") {
+            router.push("/admin-dashboard")
+          } else if (role === "DELIVERY_AGENT") {
+            router.push("/driver-dashboard")
+          } else {
+            router.push(callbackUrl) // fallback
+          }
+        }, 100)
       } else {
         toast({
           title: "Authentication failed",

@@ -1,12 +1,13 @@
 {
-  "name": "my-v0-project",
+  "name": "kech",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "npx prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@auth/core": "latest",
@@ -53,6 +54,7 @@
     "immer": "latest",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
+    "mapbox-gl": "^3.11.0",
     "next": "15.2.4",
     "next-auth": "latest",
     "next-themes": "latest",
@@ -73,12 +75,13 @@
     "zustand": "latest"
   },
   "devDependencies": {
-    "@types/node": "^22",
+    "@types/node": "^22.14.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "postcss": "^8",
     "prisma": "^6.5.0",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }

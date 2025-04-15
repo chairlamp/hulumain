@@ -12,9 +12,13 @@ export default function DriverDashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
-      <DriverDashboardSidebar />
-      <div className="flex-1 p-4 md:p-6">{children}</div>
-    </div>
+    <html lang="en">
+      <body>
+        <div className="flex min-h-screen flex-col md:flex-row">
+          <DriverDashboardSidebar />
+          <div className="flex-1 p-4 md:p-6">{children}</div>
+        </div>
+      </body>
+    </html>
   )
 }

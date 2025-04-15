@@ -57,7 +57,7 @@ export function Steps({ currentStep, className, children, ...props }: StepsProps
                     !isActive && !isCompleted && "text-muted-foreground",
                   )}
                 >
-                  {React.isValidElement(step) && step.props.title}
+                  {React.isValidElement(step) && (step as React.ReactElement<{ title: string }>).props.title}
                 </div>
               </div>
               {!isLast && (

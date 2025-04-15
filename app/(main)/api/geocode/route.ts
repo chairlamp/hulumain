@@ -16,11 +16,30 @@ export async function GET(request: NextRequest) {
     // For this example, we'll return a mock address
     const mockAddress = {
       address: "123 Main St, Anytown, USA",
+      formattedAddress: "123 Main St, Anytown, CA 12345, USA",
       street: "123 Main St",
       city: "Anytown",
       state: "CA",
       postalCode: "12345",
       country: "USA",
+      placeId: "mock-place-id",
+      neighborhood: "Downtown",
+      geometry: {
+        location: {
+          lat: Number.parseFloat(lat),
+          lng: Number.parseFloat(lng),
+        },
+        viewport: {
+          northeast: {
+            lat: Number.parseFloat(lat) + 0.01,
+            lng: Number.parseFloat(lng) + 0.01,
+          },
+          southwest: {
+            lat: Number.parseFloat(lat) - 0.01,
+            lng: Number.parseFloat(lng) - 0.01,
+          },
+        },
+      },
     }
 
     return NextResponse.json(mockAddress)

@@ -1,14 +1,15 @@
-import type React from "react"
-import { MainNav } from "@/components/main-nav"
-import { UserNav } from "@/components/user-nav"
-import { DashboardNav } from "@/components/admin-dashboard/dashboard/dashboard-nav"
-import { ModeToggle } from "@/components/mode-toggle"
-import { Separator } from "@/components/ui/separator"
+// app/admin-dashboard/layout.tsx
+import type React from "react";
+import { MainNav } from "@/components/main-nav";
+import { UserNav } from "@/components/user-nav";
+import { DashboardNav } from "@/components/admin-dashboard/dashboard/dashboard-nav";
+import { ModeToggle } from "@/components/mode-toggle";
+import { Separator } from "@/components/ui/separator";
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <div className="flex min-h-screen flex-col">
@@ -38,5 +39,5 @@ export default function DashboardLayout({
         </div>
       </div>
     </div>
-  )
+  );
 }
