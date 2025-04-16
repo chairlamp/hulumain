@@ -29,14 +29,19 @@ export function CartItemComponent({ item, showControls = false }: CartItemProps)
     removeFromCart(item.id)
   }
 
+  // Make sure price is treated as a number
+  const price = typeof item.price === "number" ? item.price : parseFloat(item.price)
+
   return (
     <div className="flex items-center justify-between py-2">
       <div className="flex-1">
         <h4 className="font-medium">{item.name}</h4>
         <p className="text-sm text-muted-foreground">
-          ${item.price.toFixed(2)} x {item.quantity}
+          ${price.toFixed(2)} x {item.quantity}
         </p>
-        {item.specialInstructions && <p className="text-xs text-muted-foreground italic">{item.specialInstructions}</p>}
+        {item.specialInstructions && (
+          <p className="text-xs text-muted-foreground italic">{item.specialInstructions}</p>
+        )}
       </div>
       {showControls && (
         <div className="flex items-center gap-1">
@@ -47,7 +52,12 @@ export function CartItemComponent({ item, showControls = false }: CartItemProps)
           <Button variant="outline" size="icon" className="h-6 w-6" onClick={handleIncrement}>
             <Plus className="h-3 w-3" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={handleRemove}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 text-destructive"
+            onClick={handleRemove}
+          >
             <Trash2 className="h-3 w-3" />
           </Button>
         </div>

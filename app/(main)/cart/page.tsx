@@ -13,10 +13,11 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 
 export default function CartPage() {
-  const { items, getCartTotal, clearCart } = useCart()
+  const { cart, getCartTotal, clearCart } = useCart()
   const [promoCode, setPromoCode] = useState("")
   const [deliveryNotes, setDeliveryNotes] = useState("")
 
+  const items = cart?.items || []
   const subtotal = getCartTotal()
   const deliveryFee = 3.99
   const tax = subtotal * 0.08 // 8% tax
@@ -60,8 +61,12 @@ export default function CartPage() {
           <div className="bg-card rounded-lg border p-6">
             <h2 className="text-xl font-semibold mb-4">Order Items</h2>
             <div className="space-y-4">
-              {items.map((item) => (
-                <CartItemComponent key={item.id} item={item} showControls={true} />
+              {items.map((item, index) => (
+                <CartItemComponent
+                  key={item.id || `${item.menuItemId}-${index}`}
+                  item={item}
+                  showControls={true}
+                />
               ))}
             </div>
             <div className="flex justify-between mt-6">
