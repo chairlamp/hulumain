@@ -75,7 +75,7 @@ export function Header({ session }: HeaderProps) {
                 </button>
               </form>
               <Button asChild size="sm" variant="secondary">
-                <Link href="/user-dashboard">Go to User Dashboard</Link>
+                <Link href="/user-dashboard">User Dashboard</Link>
               </Button>
             </div>
           ) : (

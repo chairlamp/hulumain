@@ -79,28 +79,29 @@ export function RestaurantCard({
           </Link>
           <div className="flex items-center">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-            <span className="font-medium">{rating.toFixed(1)}</span>
+            <span className="font-medium">{rating?.toFixed(1) ?? "N/A"}</span>
           </div>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{description}</p>
         <div className="flex flex-wrap gap-1 mb-3">
-          {cuisineType.map((cuisine) => (
-            <Badge key={cuisine} variant="outline" className="text-xs">
-              {cuisine}
-            </Badge>
-          ))}
+          {Array.isArray(cuisineType) &&
+            cuisineType.map((cuisine) => (
+              <Badge key={cuisine} variant="outline" className="text-xs">
+                {cuisine}
+              </Badge>
+            ))}
         </div>
         <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
-            <span>{deliveryTime} min</span>
+            <span>{deliveryTime ?? "N/A"} min</span>
           </div>
           <div className="flex items-center gap-1">
             <MapPin className="h-3 w-3" />
-            <span>{distance.toFixed(1)} mi</span>
+            <span>{typeof distance === "number" ? distance.toFixed(1) : "N/A"} mi</span>
           </div>
-          <div>Delivery: ${deliveryFee.toFixed(2)}</div>
-          <div>Min order: ${minOrder.toFixed(2)}</div>
+          <div>Delivery: ${typeof deliveryFee === "number" ? deliveryFee.toFixed(2) : "N/A"}</div>
+          <div>Min order: ${typeof minOrder === "number" ? minOrder.toFixed(2) : "N/A"}</div>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">

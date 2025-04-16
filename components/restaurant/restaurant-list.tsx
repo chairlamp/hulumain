@@ -53,17 +53,14 @@ export function RestaurantList({ restaurants, title = "Restaurants", showFilters
       case "distance":
         return a.distance - b.distance
       default:
-        return 0 // recommended - no sorting
+        return 0
     }
   })
-
-  // Add this function to fetch restaurants
 
   const fetchRestaurants = async (page = 1, filters = {}) => {
     try {
       setLoading(true)
 
-      // Build query string from filters
       const params = new URLSearchParams()
       params.append("page", page.toString())
       params.append("limit", "10")
@@ -72,11 +69,24 @@ export function RestaurantList({ restaurants, title = "Restaurants", showFilters
       if (filters.category) params.append("category", filters.category)
 
       const response = await fetch(`/api/restaurants?${params.toString()}`)
-
       if (!response.ok) throw new Error("Failed to fetch restaurants")
 
       const data = await response.json()
-      setRestaurants(data.restaurants)
+
+      // ✅ Sanitize ratings to avoid .toFixed crash
+      const sanitizedRestaurants = data.restaurants.map((r: any) => {
+        const parsedRating = typeof r.rating === "number" ? r.rating : parseFloat(r.rating)
+        if (!Number.isFinite(parsedRating)) {
+          console.warn(`Invalid rating for "${r.name}":`, r.rating)
+        }
+
+        return {
+          ...r,
+          rating: Number.isFinite(parsedRating) ? parsedRating : 0,
+        }
+      })
+
+      setRestaurants(sanitizedRestaurants)
       setPagination(data.pagination)
       setLoading(false)
     } catch (error) {
@@ -86,7 +96,6 @@ export function RestaurantList({ restaurants, title = "Restaurants", showFilters
     }
   }
 
-  // Use this in useEffect or similar
   useEffect(() => {
     fetchRestaurants(currentPage, filters)
   }, [currentPage, filters])
