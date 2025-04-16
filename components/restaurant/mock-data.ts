@@ -4,17 +4,17 @@ import { mockFoodItems } from "@/components/food/mock-data"
 
 export const mockRestaurants: Restaurant[] = [
   {
-    id: "r1",
-    name: "Burger Haven",
-    description: "Gourmet burgers made with premium ingredients and served with our signature sauces.",
-    image: "/placeholder.svg?height=300&width=500",
-    cuisineType: ["American", "Burgers"],
-    rating: 4.7,
-    deliveryTime: 25,
+    id: "clz1",  // Updated restaurant ID
+    name: "Burger Palace",  // Updated restaurant name
+    description: "Best burgers in town",  // Updated description
+    image: "/placeholder.svg?height=200&width=200",  // Updated image
+    cuisineType: ["Fast Food", "Burgers"],  // Updated cuisine type
+    rating: 4.5,  // Updated rating
+    deliveryTime: 30,  // Updated delivery time
     deliveryFee: 2.99,
-    minOrder: 15,
-    address: "123 Main St, Anytown, USA",
-    distance: 1.2,
+    minOrder: 30,  // Updated minimum order
+    address: "456 Burger Ave, New York, NY 10002",  // Updated address
+    distance: 1.5,  // Adjusted for the new address
     isOpen: true,
     phone: "(555) 123-4567",
     hours: {
@@ -27,17 +27,17 @@ export const mockRestaurants: Restaurant[] = [
     },
   },
   {
-    id: "r2",
-    name: "Pizza Palace",
-    description: "Authentic Italian pizzas baked in a wood-fired oven with fresh, locally-sourced toppings.",
-    image: "/placeholder.svg?height=300&width=500",
-    cuisineType: ["Italian", "Pizza"],
-    rating: 4.5,
-    deliveryTime: 30,
-    deliveryFee: 1.99,
-    minOrder: 20,
-    address: "456 Oak Ave, Anytown, USA",
-    distance: 2.5,
+    id: "clz2",  // Updated restaurant ID
+    name: "Pizza Heaven",  // Updated restaurant name
+    description: "Authentic Italian pizzas",  // Updated description
+    image: "/placeholder.svg?height=200&width=200",  // Updated image
+    cuisineType: ["Italian"],  // Updated cuisine type
+    rating: 4.7,  // Updated rating
+    deliveryTime: 45,  // Updated delivery time
+    deliveryFee: 3.99,
+    minOrder: 25,  // Adjusted minimum order
+    address: "789 Pizza St, New York, NY 10003",  // Updated address
+    distance: 2.0,  // Adjusted for the new address
     isOpen: true,
     phone: "(555) 234-5678",
     hours: {
@@ -164,52 +164,6 @@ export const mockRestaurants: Restaurant[] = [
       freeDelivery: false,
     },
   },
-  {
-    id: "r8",
-    name: "Mediterranean Grill",
-    description: "Authentic Mediterranean cuisine featuring kebabs, falafel, hummus, and fresh pita bread.",
-    image: "/placeholder.svg?height=300&width=500",
-    cuisineType: ["Mediterranean", "Middle Eastern"],
-    rating: 4.5,
-    deliveryTime: 35,
-    deliveryFee: 2.99,
-    minOrder: 18,
-    address: "505 Cedar Ave, Anytown, USA",
-    distance: 2.8,
-    isOpen: true,
-    phone: "(555) 890-1234",
-    hours: {
-      weekday: "11:00 AM - 9:00 PM",
-      weekend: "11:00 AM - 10:00 PM",
-    },
-    features: {
-      hasOffers: false,
-      freeDelivery: true,
-    },
-  },
-  {
-    id: "r9",
-    name: "Taco Fiesta",
-    description: "Authentic Mexican street tacos, burritos, and quesadillas with homemade salsas and guacamole.",
-    image: "/placeholder.svg?height=300&width=500",
-    cuisineType: ["Mexican", "Latin American"],
-    rating: 4.3,
-    deliveryTime: 25,
-    deliveryFee: 2.49,
-    minOrder: 15,
-    address: "606 Walnut St, Anytown, USA",
-    distance: 1.5,
-    isOpen: false,
-    phone: "(555) 901-2345",
-    hours: {
-      weekday: "11:00 AM - 9:30 PM",
-      weekend: "11:00 AM - 10:30 PM",
-    },
-    features: {
-      hasOffers: true,
-      freeDelivery: false,
-    },
-  },
 ]
 
 export const restaurantCategories = ["All", "Featured", "Nearest", "Top Rated", "New", "Special Offers"]
@@ -234,30 +188,3 @@ export const cuisineTypes = [
   "Thai",
 ]
 
-// Map restaurant IDs to their menu items
-export const getRestaurantMenu = (restaurantId: string): FoodItem[] => {
-  // This function is no longer used directly, but kept for compatibility
-  return mockFoodItems.filter((item) => item.restaurantId === restaurantId)
-}
-
-// Ensure some food items are associated with each restaurant
-// This is a temporary fix to ensure each restaurant has menu items
-export const ensureRestaurantMenus = () => {
-  // Make sure r1 (Burger Haven) has some food items
-  const r1Items = mockFoodItems.filter((item) => item.restaurantId === "r1")
-  if (r1Items.length === 0) {
-    // Assign some food items to r1
-    mockFoodItems[0].restaurantId = "r1"
-    mockFoodItems[7].restaurantId = "r1"
-  }
-
-  // Make sure r2 (Pizza Palace) has some food items
-  const r2Items = mockFoodItems.filter((item) => item.restaurantId === "r2")
-  if (r2Items.length === 0) {
-    // Assign some food items to r2
-    mockFoodItems[1].restaurantId = "r2"
-  }
-}
-
-// Run the function to ensure restaurant menus
-ensureRestaurantMenus()

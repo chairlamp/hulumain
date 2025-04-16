@@ -61,6 +61,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const addToCart = async (foodItem: FoodItem, quantity = 1, specialInstructions?: string) => {
+    // Debug: Log the incoming food item and its ID
+    console.log("🧪 addToCart called with:", foodItem)
+    console.log("🧾 menuItemId:", foodItem.id)
+  
     try {
       setLoading(true)
       const response = await fetch("/api/cart", {
@@ -74,22 +78,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
           specialInstructions,
         }),
       })
-
+  
       if (!response.ok) {
         const errorData = await response.json()
         throw new Error(errorData.error || "Failed to add item to cart")
       }
-
+  
       const data = await response.json()
       setCart(data.cart)
     } catch (error) {
-      console.error("Error adding to cart:", error)
+      console.error("❌ Error adding to cart:", error)
       throw error
     } finally {
       setLoading(false)
     }
   }
-
+  
   const removeFromCart = async (id: string) => {
     try {
       setLoading(true)

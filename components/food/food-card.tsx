@@ -68,6 +68,7 @@ export function FoodCard({
       isGlutenFree,
     }
 
+    console.log("🔍 Adding to cart:", foodItem)
     addToCart(foodItem, 1)
 
     toast({
