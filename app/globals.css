@@ -4,7 +4,7 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(135deg, hsl(56, 91%, 58%), hsl(10, 71%, 78%)); /* Apply gradient background */
+  background: linear-gradient(135deg, hsl(316, 68%, 64%), hsl(56, 91%, 58%)); /* Apply gradient background */
 }
 
 @layer utilities {
