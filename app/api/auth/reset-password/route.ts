@@ -30,12 +30,22 @@ export async function POST(request: NextRequest) {
     const resetToken = crypto.randomBytes(32).toString("hex")
     const resetTokenExpiry = new Date(Date.now() + 3600000) // 1 hour from now
 
-    // Store token in database
+    // Store token in database using nested upsert for the passwordReset relation
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        resetToken,
-        resetTokenExpiry,
+        passwordReset: {
+          upsert: {
+            update: {
+              token: resetToken,
+              expiresAt: resetTokenExpiry,
+            },
+            create: {
+              token: resetToken,
+              expiresAt: resetTokenExpiry,
+            },
+          },
+        },
       },
     })
 

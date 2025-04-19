@@ -10,7 +10,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@auth/core": "latest",
+    "@auth/core": "^0.34.2",
     "@auth/prisma-adapter": "latest",
     "@emotion/is-prop-valid": "latest",
     "@hookform/resolvers": "^3.9.1",
@@ -75,6 +75,8 @@
     "zustand": "latest"
   },
   "devDependencies": {
+    "@cypress/react": "^9.0.1",
+    "@cypress/webpack-dev-server": "^4.0.2",
     "@types/node": "^22.14.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",

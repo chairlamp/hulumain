@@ -1,3 +1,5 @@
+// app\api\orders\route.ts
+
 import { type NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]/route"
@@ -83,7 +85,7 @@ export async function POST(request: NextRequest) {
 
     const userId = session.user.id
     const data = await request.json()
-    const { restaurantId, addressId, items, paymentMethod, specialInstructions } = data
+    const { restaurantId, addressId, items } = data
 
     if (!restaurantId || !addressId || !items || items.length === 0) {
       return NextResponse.json(

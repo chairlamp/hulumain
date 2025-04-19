@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       })
     } catch (error) {
       console.error("Database error:", error)
-      return NextResponse.json({ message: "Database error", error: error.message || error }, { status: 500 })
+      return NextResponse.json({ message: "Database error", error: error instanceof Error ? error.message : String(error) }, { status: 500 })
     }
 
     if (!user) {

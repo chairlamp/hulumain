@@ -3,7 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Kech Delivery Web App",
+  title: "Kech Delivery",
   description: "Order food from your favorite restaurants",
 };
 

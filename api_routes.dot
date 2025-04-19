@@ -1,0 +1,97 @@
+digraph API {
+  graph [rankdir=LR];
+  node [shape=box];
+
+  // Admin Dashboard Cluster
+  subgraph cluster_admin {
+    label="Admin Dashboard";
+    color=lightyellow;
+    admin -> dashboard;
+    dashboard -> orders [label="orders\n(GET, POST)"];
+    dashboard -> revenue [label="revenue\n(GET)"];
+    dashboard -> stats [label="stats\n(GET)"];
+  }
+
+  // Auth Cluster
+  subgraph cluster_auth {
+    label="Auth";
+    color=lightgreen;
+    auth -> "[...nextauth]" [label="nextauth\n(GET, POST)"];
+    auth -> register [label="register\n(POST)"];
+    auth -> "reset-password" [label="reset-password\n(GET, POST)"];
+    "reset-password" -> "[token]" [label="token\n(GET)"];
+  }
+
+  // Cart Cluster
+  subgraph cluster_cart {
+    label="Cart";
+    color=lightblue;
+    cart -> "route.ts" [label="cart\n(GET, POST)"];
+  }
+
+  // Drivers Cluster
+  subgraph cluster_drivers {
+    label="Drivers";
+    color=lightcoral;
+    drivers -> "accept-order" [label="accept-order\n(POST)"];
+    "accept-order" -> "[id]" [label="[id]\n(GET, PATCH, DELETE)"];
+    drivers -> "available-orders" [label="available-orders\n(GET)"];
+    drivers -> "complete-order" [label="complete-order\n(POST)"];
+    "complete-order" -> "[id]" [label="[id]\n(GET, PATCH, DELETE)"];
+    drivers -> location [label="location\n(GET)"];
+    drivers -> "my-orders" [label="my-orders\n(GET)"];
+    drivers -> status [label="status\n(GET)"];
+  }
+
+  // Geocode Cluster
+  subgraph cluster_geocode {
+    label="Geocode";
+    color=lightpink;
+    geocode -> search [label="search\n(GET)"];
+  }
+
+  // Nearby Cluster
+  subgraph cluster_nearby {
+    label="Nearby";
+    color=lightseagreen;
+    nearby -> restaurants [label="restaurants\n(GET)"];
+  }
+
+  // Orders Cluster
+  subgraph cluster_orders {
+    label="Orders";
+    color=lightsteelblue;
+    orders -> "[id]" [label="[id]\n(GET, PATCH, DELETE)"];
+    "[id]" -> track [label="track\n(GET)"];
+  }
+
+  // Restaurants Cluster
+  subgraph cluster_restaurants {
+    label="Restaurants";
+    color=lightsalmon;
+    restaurants -> "[id]" [label="[id]\n(GET, PATCH, DELETE)"];
+    "[id]" -> "menu-items" [label="menu-items\n(GET, POST)"];
+    "menu-items" -> "[itemId]" [label="[itemId]\n(GET, PATCH, DELETE)"];
+  }
+
+  // Users Cluster
+  subgraph cluster_users {
+    label="Users";
+    color=lightgoldenrodyellow;
+    users -> "[id]" [label="[id]\n(GET, PATCH)"];
+    "[id]" -> addresses [label="addresses\n(GET, POST)"];
+    "[id]" -> "route.ts" [label="users\n(GET, POST)"];
+    "[id]" -> "route.ts";
+  }
+
+  // Root API Connections
+  api -> admin;
+  api -> auth;
+  api -> cart;
+  api -> drivers;
+  api -> geocode;
+  api -> nearby;
+  api -> orders;
+  api -> restaurants;
+  api -> users;
+}
